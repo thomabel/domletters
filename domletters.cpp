@@ -7,15 +7,15 @@ Date: 2021-06-26
 #include <iostream>
 #include <cstring>
 
-const int SIZE = 64;
+const int SIZE = 128;
+const int ABSZ = 26;
 
 int analyze(char* word){
 // Analyzes a single word to find the dominant letter count.
 // Uses an array of the 26 lower-case letters to store counts.
-  int alphabet[26];
-  for (int j = 0; j < 26; j++){
+  int alphabet[ABSZ];
+  for (int j = 0; j < ABSZ; j++)
     alphabet[j] = 0;
-  } 
 
   for (int i = 0; i < (int)strlen(word); i++){
     // Make all characters lower-case
@@ -24,16 +24,16 @@ int analyze(char* word){
     if (letter == '\n')
       continue;
     // Reject if there are any non-letter characters.
-    if (letter < 'a' || letter > 'z'){
+    if (letter < 'a' || letter > 'z')
       return 0;
-    }
+
     // Add to array.
     alphabet[letter - 'a'] += 1;
   }
 
   // Find max value from array.
   int total = 0;
-  for (int j = 0; j < 26; j++){
+  for (int j = 0; j < ABSZ; j++){
     if (alphabet[j] > total)
       total = alphabet[j];
   }
@@ -41,19 +41,41 @@ int analyze(char* word){
 }
 
 int readinput(){
-// Reads word by word from standard input.
-// Stops when empty string is read.
+// Reads from standard input.
   int total = 0;
-  char* word = new char[SIZE];
+  char* line = new char[SIZE];
+  char* word;
+  //char peek;
 
+  while (std::cin.getline(line, SIZE)){
+    if (strlen(line) == 0)
+      continue;
+    word = strtok(line, " ");
+    while(word != NULL){
+      total += analyze(word);
+      word = strtok(NULL, " ");
+    }
+  }
+/*
   do {
-    std::cin.getline(word, SIZE, ' ');
-    total += analyze(word);
-  } while(word[0] != '\0');
-
+    // Gets a line from the input.
+    std::cin.getline(line, SIZE);
+    // Breaks it down into separate words.
+    word = strtok(line, " ");
+    while(word != NULL){
+      total += analyze(word);
+      word = strtok(NULL, " ");
+    }
+    // Peek the next character.
+    //peek = std::cin.peek();
+    //std::cout << peek << std::endl;
+  } while(line != "" || cin.good());
+*/
+  delete[] line;
   return total;
 }
 
+// MAIN
 int main(){
   int total = readinput();
 
